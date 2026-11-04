@@ -1,0 +1,200 @@
+{
+  "unit_tests": [
+    {
+      "case": "exact_single",
+      "tp": 1,
+      "fp": 0,
+      "pass": true
+    },
+    {
+      "case": "wrong_class",
+      "tp": 0,
+      "fp": 1,
+      "pass": true
+    },
+    {
+      "case": "duplicate_preds",
+      "tp": 1,
+      "fp": 1,
+      "pass": true
+    },
+    {
+      "case": "gt_no_pred",
+      "tp": 0,
+      "fp": 0,
+      "pass": true
+    },
+    {
+      "case": "pred_no_gt",
+      "tp": 0,
+      "fp": 1,
+      "pass": true
+    },
+    {
+      "case": "empty",
+      "tp": 0,
+      "fp": 0,
+      "pass": true
+    },
+    {
+      "case": "ap_simple",
+      "ap": 0.9950495039579206,
+      "pass": false
+    }
+  ],
+  "label_audit": {
+    "classes_seen": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "bad_label": 0,
+    "normal_nonempty": 0,
+    "abnormal_empty": 0,
+    "class_names": [
+      "angiodysplasia",
+      "erosion",
+      "stenosis",
+      "lymphangiectasia",
+      "lymph-follicle",
+      "SMT",
+      "polyp-like",
+      "bleeding",
+      "diverticulum",
+      "erythema",
+      "foreign-body",
+      "vein"
+    ],
+    "background_comment_present": true
+  },
+  "threshold_audit": {
+    "val_py_default_conf": 0.2499,
+    "train_validate_overrides_conf": false,
+    "source": "Yolov5/yolov5/val.py run(conf_thres=0.2499); train.py validate.run(...) omits conf_thres"
+  },
+  "checkpoint_audit": [
+    {
+      "tag": "A_s42",
+      "epochs_logged": 20,
+      "best_epoch_by_high_thr_val": 16,
+      "last_epoch": 19
+    },
+    {
+      "tag": "C_s42",
+      "epochs_logged": 20,
+      "best_epoch_by_high_thr_val": 16,
+      "last_epoch": 19
+    },
+    {
+      "tag": "E_s42",
+      "epochs_logged": 20,
+      "best_epoch_by_high_thr_val": 18,
+      "last_epoch": 19
+    },
+    {
+      "tag": "M1_s42",
+      "epochs_logged": 20,
+      "best_epoch_by_high_thr_val": 17,
+      "last_epoch": 19
+    },
+    {
+      "tag": "M2_s42",
+      "epochs_logged": 20,
+      "best_epoch_by_high_thr_val": 18,
+      "last_epoch": 19
+    },
+    {
+      "tag": "P0_s42",
+      "epochs_logged": 20,
+      "best_epoch_by_high_thr_val": 19,
+      "last_epoch": 19
+    },
+    {
+      "tag": "P2_s42",
+      "epochs_logged": 20,
+      "best_epoch_by_high_thr_val": 19,
+      "last_epoch": 19
+    }
+  ],
+  "best_vs_last": [
+    {
+      "cond": "A",
+      "best_ap50": 0.26766653603787677,
+      "best_ap5095": 0.11964792055941985,
+      "last_ap50": 0.31003844042134626,
+      "last_ap5095": 0.1347684679538315,
+      "best_fp": 249,
+      "last_fp": 382,
+      "ranking_change": null
+    },
+    {
+      "cond": "C",
+      "best_ap50": 0.2510794736866526,
+      "best_ap5095": 0.11640103846990062,
+      "last_ap50": 0.2923550285861617,
+      "last_ap5095": 0.13705115905982906,
+      "best_fp": 220,
+      "last_fp": 414,
+      "ranking_change": null
+    },
+    {
+      "cond": "M1",
+      "best_ap50": 0.29138199293393785,
+      "best_ap5095": 0.11585327398543933,
+      "last_ap50": 0.2763564156215458,
+      "last_ap5095": 0.1247953363129225,
+      "best_fp": 152,
+      "last_fp": 334,
+      "ranking_change": null
+    },
+    {
+      "cond": "M2",
+      "best_ap50": 0.28959965903629803,
+      "best_ap5095": 0.1272233605738562,
+      "last_ap50": 0.3115219823516656,
+      "last_ap5095": 0.14481364832791888,
+      "best_fp": 292,
+      "last_fp": 392,
+      "ranking_change": null
+    },
+    {
+      "cond": "P0",
+      "best_ap50": 0.28159154378960266,
+      "best_ap5095": 0.12833621778486154,
+      "last_ap50": 0.28159154378960266,
+      "last_ap5095": 0.12833621778486154,
+      "best_fp": 375,
+      "last_fp": 375,
+      "ranking_change": null
+    },
+    {
+      "cond": "P2",
+      "best_ap50": 0.2831543958346104,
+      "best_ap5095": 0.13157516619176485,
+      "last_ap50": 0.2831543958346104,
+      "last_ap5095": 0.13157516619176485,
+      "best_fp": 366,
+      "last_fp": 366,
+      "ranking_change": null
+    },
+    {
+      "cond": "E",
+      "best_ap50": 0.2756555692316415,
+      "best_ap5095": 0.12590575898435338,
+      "last_ap50": 0.3054999173435351,
+      "last_ap5095": 0.1382397614433746,
+      "best_fp": 400,
+      "last_fp": 390,
+      "ranking_change": null
+    }
+  ]
+}

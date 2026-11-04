@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this code or derived data, please cite the SEE-AI and WCE2024 papers."
+title: "WCE Colour–Contrast Pilot"
+version: 2.1
+date-released: 2026-11-04
+license: MIT
+references:
+  - type: article
+    title: "Small bowel capsule endoscopy examination and open access database with artificial intelligence: The SEE-artificial intelligence project"
+    year: 2024
+    doi: 10.1002/deo2.258
+  - type: article
+    title: "Influence of color correction on pathology detection in Capsule Endoscopy"
+    year: 2025
+    eprint: arXiv:2502.00076

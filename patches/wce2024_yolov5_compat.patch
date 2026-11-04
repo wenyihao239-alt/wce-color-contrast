@@ -1,0 +1,110 @@
+diff --git a/Yolov5/yolov5/hubconf.py b/Yolov5/yolov5/hubconf.py
+index 47b758c..2145b86 100644
+--- a/Yolov5/yolov5/hubconf.py
++++ b/Yolov5/yolov5/hubconf.py
+@@ -62,7 +62,7 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
+             cfg = list((Path(__file__).parent / 'models').rglob(f'{path.stem}.yaml'))[0]  # model.yaml path
+             model = DetectionModel(cfg, channels, classes)  # create model
+             if pretrained:
+-                ckpt = torch.load(attempt_download(path), map_location=device)  # load
++                ckpt = torch.load(attempt_download(path), map_location=device, weights_only=False)  # load
+                 csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
+                 csd = intersect_dicts(csd, model.state_dict(), exclude=['anchors'])  # intersect
+                 model.load_state_dict(csd, strict=False)  # load
+diff --git a/Yolov5/yolov5/models/experimental.py b/Yolov5/yolov5/models/experimental.py
+index a7f5800..8904268 100644
+--- a/Yolov5/yolov5/models/experimental.py
++++ b/Yolov5/yolov5/models/experimental.py
+@@ -76,7 +76,7 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
+ 
+     model = Ensemble()
+     for w in weights if isinstance(weights, list) else [weights]:
+-        ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
++        ckpt = torch.load(attempt_download(w), map_location='cpu', weights_only=False)  # load
+         ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
+ 
+         # Model compatibility updates
+diff --git a/Yolov5/yolov5/train.py b/Yolov5/yolov5/train.py
+index 8a9bc2d..8cce32c 100644
+--- a/Yolov5/yolov5/train.py
++++ b/Yolov5/yolov5/train.py
+@@ -114,7 +114,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
+     if pretrained:
+         with torch_distributed_zero_first(LOCAL_RANK):
+             weights = attempt_download(weights)  # download if not found locally
+-        ckpt = torch.load(weights, map_location='cpu')  # load checkpoint to CPU to avoid CUDA memory leak
++        ckpt = torch.load(weights, map_location='cpu', weights_only=False)  # load checkpoint to CPU to avoid CUDA memory leak
+         model = Model(cfg or ckpt['model'].yaml, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
+         exclude = ['anchor'] if (cfg or hyp.get('anchors')) and not resume else []  # exclude keys
+         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
+@@ -353,6 +353,8 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
+                                                 dataloader=val_loader,
+                                                 save_dir=save_dir,
+                                                 plots=False,
++                                                save_txt=False,
++                                                save_conf=False,
+                                                 callbacks=callbacks,
+                                                 compute_loss=compute_loss)
+ 
+@@ -489,7 +491,7 @@ def main(opt, callbacks=Callbacks()):
+             with open(opt_yaml, errors='ignore') as f:
+                 d = yaml.safe_load(f)
+         else:
+-            d = torch.load(last, map_location='cpu')['opt']
++            d = torch.load(last, map_location='cpu', weights_only=False)['opt']
+         opt = argparse.Namespace(**d)  # replace
+         opt.cfg, opt.weights, opt.resume = '', str(last), True  # reinstate
+         if is_url(opt_data):
+diff --git a/Yolov5/yolov5/utils/general.py b/Yolov5/yolov5/utils/general.py
+index 8419c92..8fa59a6 100644
+--- a/Yolov5/yolov5/utils/general.py
++++ b/Yolov5/yolov5/utils/general.py
+@@ -978,7 +978,7 @@ def non_max_suppression(
+ 
+ def strip_optimizer(f='best.pt', s=''):  # from utils.general import *; strip_optimizer()
+     # Strip optimizer from 'f' to finalize training, optionally save as 's'
+-    x = torch.load(f, map_location=torch.device('cpu'))
++    x = torch.load(f, map_location=torch.device('cpu'), weights_only=False)
+     if x.get('ema'):
+         x['model'] = x['ema']  # replace model with ema
+     for k in 'optimizer', 'best_fitness', 'ema', 'updates':  # keys
+diff --git a/Yolov5/yolov5/utils/metrics.py b/Yolov5/yolov5/utils/metrics.py
+index fb6d768..f9ee85f 100644
+--- a/Yolov5/yolov5/utils/metrics.py
++++ b/Yolov5/yolov5/utils/metrics.py
+@@ -90,9 +90,10 @@ def ap_per_class(tp, conf, pred_cls, target_cls, plot=False, save_dir='.', names
+ 
+     i = smooth(f1.mean(0), 0.1).argmax()  # max F1 index
+     p, r, f1 = p[:, i], r[:, i], f1[:, i]
+-    tp = (r * nt).round()  # true positives
+-    fp = (tp / (p + eps) - tp).round()  # false positives
+-    
++    tp = np.atleast_1d((r * nt).round())  # true positives
++    fp = np.atleast_1d((tp / (p + eps) - tp).round())  # false positives
++    p, r, f1 = np.atleast_1d(p), np.atleast_1d(r), np.atleast_1d(f1)
++    ap = np.atleast_2d(ap)
+     return tp, fp,p, r,f1, ap, unique_classes.astype(int)
+ 
+ 
+@@ -116,7 +117,7 @@ def compute_ap(recall, precision):
+     method = 'interp'  # methods: 'continuous', 'interp'
+     if method == 'interp':
+         x = np.linspace(0, 1, 101)  # 101-point interp (COCO)
+-        ap = np.trapz(np.interp(x, mrec, mpre), x)  # integrate
++        ap = np.trapezoid(np.interp(x, mrec, mpre), x)  # integrate
+     else:  # 'continuous'
+         i = np.where(mrec[1:] != mrec[:-1])[0]  # points where x axis (recall) changes
+         ap = np.sum((mrec[i + 1] - mrec[i]) * mpre[i + 1])  # area under curve
+diff --git a/Yolov5/yolov5/val.py b/Yolov5/yolov5/val.py
+index 62a80c1..c423b31 100644
+--- a/Yolov5/yolov5/val.py
++++ b/Yolov5/yolov5/val.py
+@@ -299,7 +299,7 @@ def run(
+     #print(" f1.mean()=", f1.mean())
+     #print(" map50=", map50)
+     #print(" map=", map)
+-    LOGGER.info(pf % ('all', seen, nt.sum(), tp.mean(), fp.mean(),fn,mp, mr,f1.mean(),map50, map))
++    LOGGER.info(pf % ('all', seen, nt.sum(), float(np.mean(np.atleast_1d(tp))), float(np.mean(np.atleast_1d(fp))),fn,mp, mr,float(np.mean(np.atleast_1d(f1))),map50, map))
+     if nt.sum() == 0:
+         LOGGER.warning(f'WARNING 鈿狅笍 no labels found in {task} set, can not compute metrics without labels')
+ 

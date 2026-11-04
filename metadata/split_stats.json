@@ -1,0 +1,63 @@
+{
+  "n": 18481,
+  "clusters": 13408,
+  "splits": {
+    "train": {
+      "images": 12936,
+      "boxes": 15322,
+      "classes": {
+        "angiodysplasia": 608,
+        "erosion": 3952,
+        "stenosis": 329,
+        "lymphangiectasia": 385,
+        "lymph-follicle": 4449,
+        "SMT": 360,
+        "polyp-like": 2211,
+        "bleeding": 601,
+        "diverticulum": 27,
+        "erythema": 672,
+        "foreign-body": 1102,
+        "vein": 626
+      },
+      "normal": 4661
+    },
+    "val": {
+      "images": 2773,
+      "boxes": 3751,
+      "classes": {
+        "angiodysplasia": 150,
+        "erosion": 1011,
+        "stenosis": 52,
+        "lymphangiectasia": 91,
+        "lymph-follicle": 1168,
+        "SMT": 84,
+        "polyp-like": 471,
+        "bleeding": 138,
+        "diverticulum": 15,
+        "erythema": 212,
+        "foreign-body": 237,
+        "vein": 122
+      },
+      "normal": 777
+    },
+    "test": {
+      "images": 2772,
+      "boxes": 3960,
+      "classes": {
+        "angiodysplasia": 173,
+        "erosion": 1024,
+        "stenosis": 64,
+        "lymphangiectasia": 133,
+        "lymph-follicle": 1171,
+        "SMT": 98,
+        "polyp-like": 548,
+        "bleeding": 129,
+        "diverticulum": 12,
+        "erythema": 135,
+        "foreign-body": 307,
+        "vein": 166
+      },
+      "normal": 723
+    }
+  }
+}
