@@ -10,6 +10,22 @@ capsule endoscopy (WCE).
 > run-to-run variation and Holm-corrected tests were non-significant. Input-domain
 > shift was much larger than within-domain condition differences.
 
+## Downloads
+
+Derived data, metadata and model weights are available in the shared Google Drive
+folder:
+
+**https://drive.google.com/drive/folders/1_BKwtHZlN1nHb1LprpmcSzuJs01Fgguw?usp=sharing**
+
+| Archive | Size | Contents |
+|---|---:|---|
+| `datasets.zip` | ~36.9 GB | V1 and V2 condition images, 18,481 images per condition |
+| `metadata.zip` | ~3.3 MB | labels, manifest, CCM matrices, G1–G3/sweep/E2/E3 JSON, reports |
+| `models.zip` | ~402 MB | YOLOv5s best/last weights for V1, V2 and the anchor runs |
+
+The raw SEE-AI images are **not** redistributed in this repository. Download them
+from Kaggle (links below) and use the scripts to regenerate conditions if needed.
+
 ## What is included
 
 - `src/wce/` — colour-space, condition generation, metrics and data utilities.
